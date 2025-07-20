@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One Piece Quiz</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+  }
+  header {
+    background-color: #FF4500;
+    width: 100%;
+    padding: 1rem 0;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    user-select: none;
+  }
+  #quiz-container {
+    background: white;
+    max-width: 700px;
+    width: 90%;
+    margin: 2rem auto;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  #score-counter {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  #question-number {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #777;
+  }
+  #question-text {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  #answers {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+  }
+  #answers li {
+    background: #e0e0e0;
+    margin: 0.5rem 0;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #answers li:hover {
+    background-color: #d3d3d3;
+  }
+  #answers li.correct {
+    background-color: #4CAF50 !important;
+    color: white;
+    cursor: default;
+  }
+  #answers li.incorrect {
+    background-color: #f44336 !important;
+    color: white;
+    cursor: default;
+  }
+  #answers li.correct::after {
+    content: "✔";
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  #answers li.incorrect::after {
+    content: "✖";
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  #next-btn {
+    display: none;
+    background-color: #FF4500;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.6rem;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  #next-btn:hover:not(:disabled) {
+    background-color: #e03e00;
+  }
+  #next-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  #final-score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    #quiz-container {
+      padding: 1rem 1rem;
+    }
+    #question-text {
+      font-size: 1.1rem;
+    }
+    #answers li {
+      font-size: 1rem;
+    }
+    #next-btn {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>One Piece Quiz</header>
+
+<div id="quiz-container">
+  <div id="score-counter">Score: 0 / 0</div>
+  <div id="question-number"></div>
+  <div id="question-text"></div>
+  <ul id="answers"></ul>
+  <button id="next-btn">Next</button>
+  <div id="final-score"></div>
+</div>
+
+<script>
+  // Questions about One Piece, sourced from Wikipedia article content
+  const questions = [
+    {
+      question: "Who is the creator of the manga One Piece?",
+      answers: [
+        { text: "Eiichiro Oda", correct: true },
+        { text: "Masashi Kishimoto", correct: false },
+        { text: "Tite Kubo", correct: false },
+        { text: "Akira Toriyama", correct: false }
+      ]
+    },
+    {
+      question: "What is the name of the main protagonist in One Piece?",
+      answers: [
+        { text: "Monkey D. Luffy", correct: true },
+        { text: "Roronoa Zoro", correct: false },
+        { text: "Sanji", correct: false },
+        { text: "Usopp", correct: false }
+      ]
+    },
+    {
+      question: "What is the name of Luffy's pirate crew?",
+      answers: [
+        { text: "Straw Hat Pirates", correct: true },
+        { text: "Blackbeard Pirates", correct: false },
+        { text: "Red Hair Pirates", correct: false },
+        { text: "Heart Pirates", correct: false }
+      ]
+    },
+    {
+      question: "What is Luffy's goal in One Piece?",
+      answers: [
+        { text: "Find the One Piece and become Pirate King", correct: true },
+        { text: "Defeat the Marines", correct: false },
+        { text: "Destroy the World Government", correct: false },
+        { text: "Become the strongest swordsman", correct: false }
+      ]
+    },
+    {
+      question: "What fruit did Luffy eat that gave him his powers?",
+      answers: [
+        { text: "Gomu Gomu no Mi (Rubber Fruit)", correct: true },
+        { text: "Mera Mera no Mi (Flame Fruit)", correct: false },
+        { text: "Hana Hana no Mi (Flower Fruit)", correct: false },
+        { text: "Ope Ope no Mi (Operation Fruit)", correct: false }
+      ]
+    },
+    {
+      question: "Which character is the swordsman of the Straw Hat Pirates?",
+      answers: [
+        { text: "Roronoa Zoro", correct: true },
+        { text: "Sanji", correct: false },
+        { text: "Usopp", correct: false },
+        { text: "Franky", correct: false }
+      ]
+    },
+    {
+      question: "What is the name of the ship the Straw Hat Pirates first sailed on?",
+      answers: [
+        { text: "Going Merry", correct: true },
+        { text: "Thousand Sunny", correct: false },
+        { text: "Moby Dick", correct: false },
+        { text: "Red Force", correct: false }
+      ]
+    },
+    {
+      question: "Who is the navigator of the Straw Hat Pirates?",
+      answers: [
+        { text: "Nami", correct: true },
+        { text: "Robin", correct: false },
+        { text: "Vivi", correct: false },
+        { text: "Franky", correct: false }
+      ]
+    },
+    {
+      question: "Which organization is the main antagonist group early in the series?",
+      answers: [
+        { text: "Baroque Works", correct: true },
+        { text: "CP9", correct: false },
+        { text: "Revolutionary Army", correct: false },
+        { text: "Shichibukai", correct: false }
+      ]
+    },
+    {
+      question: "Who is the captain of the Whitebeard Pirates?",
+      answers: [
+        { text: "Edward Newgate", correct: true },
+        { text: "Marshall D. Teach", correct: false },
+        { text: "Gol D. Roger", correct: false },
+        { text: "Kaido", correct: false }
+      ]
+    },
+    {
+      question: "What is the legendary treasure sought after by pirates in the One Piece world?",
+      answers: [
+        { text: "One Piece", correct: true },
+        { text: "All Blue", correct: false },
+        { text: "Eternal Pose", correct: false },
+        { text: "Poneglyph", correct: false }
+      ]
+    },
+    {
+      question: "Which sea does the One Piece story begin in?",
+      answers: [
+        { text: "East Blue", correct: true },
+        { text: "West Blue", correct: false },
+        { text: "North Blue", correct: false },
+        { text: "South Blue", correct: false }
+      ]
+    },
+    {
+      question: "Who is the cook of the Straw Hat Pirates?",
+      answers: [
+        { text: "Sanji", correct: true },
+        { text: "Franky", correct: false },
+        { text: "Brook", correct: false },
+        { text: "Chopper", correct: false }
+      ]
+    },
+    {
+      question: "Which character has the Devil Fruit ability to control fire?",
+      answers: [
+        { text: "Portgas D. Ace", correct: true },
+        { text: "Luffy", correct: false },
+        { text: "Smoker", correct: false },
+        { text: "Tashigi", correct: false }
+      ]
+    },
+    {
+      question: "What is the name of the World Government's intelligence agency?",
+      answers: [
+        { text: "CP9", correct: true },
+        { text: "Revolutionary Army", correct: false },
+        { text: "Shichibukai", correct: false },
+        { text: "Marines", correct: false }
+      ]
+    },
+    {
+      question: "Which member of the Straw Hat crew is a doctor?",
+      answers: [
+        { text: "Tony Tony Chopper", correct: true },
+        { text: "Franky", correct: false },
+        { text: "Brook", correct: false },
+        { text: "Nami", correct: false }
+      ]
+    },
+    {
+      question: "Which island is known as the home of the Straw Hat Pirates' shipwright?",
+      answers: [
+        { text: "Water 7", correct: true },
+        { text: "Dressrosa", correct: false },
+        { text: "Skypiea", correct: false },
+        { text: "Sabaody Archipelago", correct: false }
+      ]
+    },
+    {
+      question: "Who is the archaeologist in the Straw Hat crew?",
+      answers: [
+        { text: "Nico Robin", correct: true },
+        { text: "Vivi", correct: false },
+        { text: "Jewelry Bonney", correct: false },
+        { text: "Hancock", correct: false }
+      ]
+    },
+    {
+      question: "Which group are the Seven Warlords of the Sea?",
+      answers: [
+        { text: "A group of powerful pirates allied with the World Government", correct: true },
+        { text: "A rival pirate crew", correct: false },
+        { text: "Revolutionary Army members", correct: false },
+        { text: "Marine Admirals", correct: false }
+      ]
+    },
+    {
+      question: "What is the name of the second ship of the Straw Hat Pirates?",
+      answers: [
+        { text: "Thousand Sunny", correct: true },
+        { text: "Going Merry", correct: false },
+        { text: "Moby Dick", correct: false },
+        { text: "Red Force", correct: false }
+      ]
+    }
+  ];
+
+  const questionNumberEl = document.getElementById('question-number');
+  const questionTextEl = document.getElementById('question-text');
+  const answersEl = document.getElementById('answers');
+  const nextBtn = document.getElementById('next-btn');
+  const scoreCounter = document.getElementById('score-counter');
+  const finalScoreEl = document.getElementById('final-score');
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let answeredQuestions = 0;
+
+  function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    answeredQuestions = 0;
+    finalScoreEl.innerHTML = '';
+    nextBtn.style.display = 'none';
+    scoreCounter.textContent = `Score: ${score} / ${answeredQuestions}`;
+    showQuestion();
+  }
+
+  function showQuestion() {
+    clearStatusClass();
+    nextBtn.style.display = 'none';
+    const currentQuestion = questions[currentQuestionIndex];
+
+    questionNumberEl.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+    questionTextEl.textContent = currentQuestion.question;
+
+    // Clear previous answers
+    answersEl.innerHTML = '';
+
+    currentQuestion.answers.forEach((answer, index) => {
+      const li = document.createElement('li');
+      li.textContent = answer.text;
+      li.dataset.correct = answer.correct;
+      li.addEventListener('click', selectAnswer);
+      answersEl.appendChild(li);
+    });
+  }
+
+  function clearStatusClass() {
+    // Remove all status classes and event listeners to prevent answer change
+    Array.from(answersEl.children).forEach(li => {
+      li.classList.remove('correct', 'incorrect');
+      li.style.pointerEvents = 'auto';
+    });
+  }
+
+  function selectAnswer(e) {
+    const selectedLi = e.currentTarget;
+    const correct = selectedLi.dataset.correct === "true";
+
+    answeredQuestions++;
+    if (correct) score++;
+
+    // Lock all answers and show colors
+    Array.from(answersEl.children).forEach(li => {
+      li.style.pointerEvents = 'none';
+      const isCorrect = li.dataset.correct === "true";
+      if (isCorrect) {
+        li.classList.add('correct');
+      }
+    });
+
+    if (!correct) {
+      selectedLi.classList.add('incorrect');
+    }
+
+    scoreCounter.textContent = `Score: ${score} / ${answeredQuestions}`;
+    nextBtn.style.display = 'inline-block';
+
+    // If last question, change nextBtn text
+    if (currentQuestionIndex === questions.length - 1) {
+      nextBtn.textContent = 'Finish';
+    } else {
+      nextBtn.textContent = 'Next';
+    }
+  }
+
+  nextBtn.addEventListener('click', () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      showFinalScore();
+    }
+  });
+
+  function showFinalScore() {
+    questionNumberEl.textContent = '';
+    questionTextEl.textContent = '';
+    answersEl.innerHTML = '';
+    nextBtn.style.display = 'none';
+    scoreCounter.textContent = '';
+
+    finalScoreEl.textContent = `Quiz Completed! Your final score is ${score} out of ${questions.length}.`;
+  }
+
+  // Initialize quiz on load
+  startQuiz();
+</script>
+
+</body>
+</html>
