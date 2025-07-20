@@ -3,25 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Y7 Perry Science Plants, Ecology & Climate Change Quiz</title>
+  <title>Plants, Ecology & Climate Change Quiz</title>
   <style>
     body { font-family: Arial, sans-serif; background: #eef6f1; text-align: center; margin: 0; padding: 20px; }
     .quiz-container { background: #fff; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     .question { font-size: 1.2em; margin-bottom: 20px; }
-    .answers button { display: block; margin: 10px auto; padding: 10px; width: 100%; max-width: 400px; border: none; border-radius: 5px; background: #4caf50; color: white; font-size: 1em; cursor: pointer; }
-    .answers button:hover { background: #45a049; }
+    .answers button { display: block; margin: 10px auto; padding: 10px; width: 100%; max-width: 400px; border: none; border-radius: 5px; background: #ddd; color: #000; font-size: 1em; cursor: pointer; position: relative; }
+    .answers button.correct { background: #4caf50; color: #fff; }
+    .answers button.wrong { background: #f44336; color: #fff; }
+    .answers button.wrong::after { content: ' ✖'; font-weight: bold; }
+    .answers button:disabled { cursor: not-allowed; opacity: 0.8; }
     #next-btn { margin-top: 20px; display: none; padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    #score { font-size: 1.5em; margin-top: 20px; }
+    #score { font-size: 1.2em; margin-top: 10px; }
   </style>
 </head>
 <body>
   <div class="quiz-container">
-    <h1>Y7 Perry Science - Plants, Ecology & Climate Change Quiz</h1>
+    <h1>Plants, Ecology & Climate Change Quiz</h1>
     <div id="quiz">
       <div class="question" id="question">Loading question...</div>
       <div class="answers" id="answers"></div>
+      <div id="score">Score: 0</div>
       <button id="next-btn" onclick="nextQuestion()">Next</button>
-      <div id="score"></div>
     </div>
   </div>
   <script>
@@ -59,20 +62,25 @@
       q.a.forEach((answer, index) => {
         const button = document.createElement('button');
         button.innerText = answer;
-        button.onclick = () => checkAnswer(index);
+        button.onclick = () => checkAnswer(index, button);
         answersDiv.appendChild(button);
       });
+      document.getElementById('score').innerText = `Score: ${score}`;
       document.getElementById('next-btn').style.display = 'none';
     }
 
-    function checkAnswer(selected) {
+    function checkAnswer(selected, button) {
       const q = questions[currentQuestion];
+      const buttons = document.querySelectorAll('#answers button');
+      buttons.forEach(btn => btn.disabled = true);
       if (selected === q.correct) {
         score++;
-        alert('Correct!');
+        button.classList.add('correct');
       } else {
-        alert('Wrong!');
+        button.classList.add('wrong');
+        buttons[q.correct].classList.add('correct');
       }
+      document.getElementById('score').innerText = `Score: ${score}`;
       document.getElementById('next-btn').style.display = 'inline-block';
     }
 
