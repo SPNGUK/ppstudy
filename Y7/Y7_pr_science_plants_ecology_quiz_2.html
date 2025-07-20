@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plants, Ecology & Climate Change Quiz 2</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef6f1; text-align: center; margin: 0; padding: 20px; }
+    .quiz-container { background: #fff; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .question { font-size: 1.2em; margin-bottom: 20px; }
+    .answers button { display: block; margin: 10px auto; padding: 10px; width: 100%; max-width: 400px; border: none; border-radius: 5px; background: #ddd; color: #000; font-size: 1em; cursor: pointer; position: relative; }
+    .answers button.correct { background: #4caf50; color: #fff; }
+    .answers button.wrong { background: #f44336; color: #fff; }
+    .answers button.wrong::after { content: ' ✖'; font-weight: bold; }
+    .answers button:disabled { cursor: not-allowed; opacity: 0.8; }
+    #next-btn { margin-top: 20px; display: none; padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    #score { font-size: 1.2em; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Plants, Ecology & Climate Change Quiz</h1>
+    <div id="quiz">
+      <div class="question" id="question">Loading question...</div>
+      <div class="answers" id="answers"></div>
+      <div id="score">Score: 0</div>
+      <button id="next-btn" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+  <script>
+    const questions = [
+      { q: "What gas do plants take in during photosynthesis?", a: ["Oxygen", "Carbon dioxide", "Methane"], correct: 1 },
+      { q: "Which organelle in plant cells carries out photosynthesis?", a: ["Mitochondria", "Chloroplast", "Nucleus"], correct: 1 },
+      { q: "Which part of the flower produces pollen?", a: ["Stigma", "Anther", "Style"], correct: 1 },
+      { q: "What type of reproduction involves two parents?", a: ["Asexual", "Sexual", "Binary fission"], correct: 1 },
+      { q: "Which process moves water from roots to leaves?", a: ["Diffusion", "Transpiration stream", "Evaporation"], correct: 1 },
+      { q: "What do decomposers do in an ecosystem?", a: ["Consume producers", "Break down dead material", "Pollinate flowers"], correct: 1 },
+      { q: "Which is an example of a herbivore?", a: ["Lion", "Cow", "Human"], correct: 1 },
+      { q: "Which pyramid shows population at trophic levels?", a: ["Pyramid of numbers", "Pyramid of biomass", "Pyramid of energy"], correct: 0 },
+      { q: "What is the primary source of energy for most food webs?", a: ["The Sun", "Wind", "Fossil fuels"], correct: 0 },
+      { q: "What is the role of producers?", a: ["Eat other organisms", "Make food using sunlight", "Break down waste"], correct: 1 },
+      { q: "Which of these is a greenhouse gas?", a: ["Methane", "Nitrogen", "Argon"], correct: 0 },
+      { q: "What is the effect of deforestation on carbon dioxide levels?", a: ["Decrease", "Increase", "No change"], correct: 1 },
+      { q: "Which is a renewable energy source?", a: ["Coal", "Solar", "Oil"], correct: 1 },
+      { q: "What does combustion release?", a: ["Carbon dioxide and water", "Glucose and oxygen", "Nitrogen and methane"], correct: 0 },
+      { q: "What is the process of carbon moving through Earth and atmosphere called?", a: ["Nitrogen cycle", "Carbon cycle", "Water cycle"], correct: 1 },
+      { q: "Which term means variety of living things in a habitat?", a: ["Population", "Biodiversity", "Abundance"], correct: 1 },
+      { q: "What is global warming?", a: ["Long-term cooling", "Rise in Earth’s average temperature", "Seasonal change"], correct: 1 },
+      { q: "Which human activity releases methane?", a: ["Rice farming", "Solar panel use", "Wind turbines"], correct: 0 },
+      { q: "Which type of energy resource will run out?", a: ["Renewable", "Non-renewable", "Solar"], correct: 1 },
+      { q: "What is the male part of the flower called?", a: ["Stigma", "Stamen", "Carpel"], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question').innerText = q.q;
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+      q.a.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.innerText = answer;
+        button.onclick = () => checkAnswer(index, button);
+        answersDiv.appendChild(button);
+      });
+      document.getElementById('score').innerText = `Score: ${score}`;
+      document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function checkAnswer(selected, button) {
+      const q = questions[currentQuestion];
+      const buttons = document.querySelectorAll('#answers button');
+      buttons.forEach(btn => btn.disabled = true);
+      if (selected === q.correct) {
+        score++;
+        button.classList.add('correct');
+      } else {
+        button.classList.add('wrong');
+        buttons[q.correct].classList.add('correct');
+      }
+      document.getElementById('score').innerText = `Score: ${score}`;
+      document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        document.getElementById('quiz').innerHTML = `<h2>Quiz Complete!</h2><p>Your score: ${score} / ${questions.length}</p>`;
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
