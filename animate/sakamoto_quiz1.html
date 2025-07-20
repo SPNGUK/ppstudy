@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sakamoto Days Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  h1 {
+    text-align: center;
+  }
+  #quiz-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .question {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  .answers button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  .answers button.correct {
+    background-color: #c8e6c9;
+    color: #256029;
+  }
+  .answers button.wrong {
+    background-color: #ffcdd2;
+    color: #c62828;
+  }
+  .score {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  #next-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    display: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>Sakamoto Days Quiz</h1>
+<div class="score">
+  Score: <span id="score">0</span> / <span id="current">1</span>
+</div>
+<div id="quiz-container">
+  <div class="question" id="question">Question text</div>
+  <div class="answers" id="answers"></div>
+  <button id="next-btn">Next</button>
+</div>
+
+<script>
+// Questions array (20 questions about Sakamoto Days)
+const questions = [
+  {q:"What is Taro Sakamoto's profession after retirement?", a:["Hitman","Shopkeeper","Car mechanic","Teacher"], correct:1},
+  {q:"How many percent of his prime power does Sakamoto retain post-retirement?", a:["10%","30%","50%","70%"], correct:1},
+  {q:"What ability does Sakamoto lose when extremely angry?", a:["Fat mass","Memory","Voice","Strength"], correct:0},
+  {q:"What is Sakamoto’s daughter’s name?", a:["Hana","Yuki","Aoi","Mai"], correct:0},
+  {q:"Who is Sakamoto’s clairvoyant former partner?", a:["Lu Shaotang","Shin Asakura","Heisuke","Nagumo"], correct:1},
+  {q:"What kind of store does Sakamoto run?", a:["Bookstore","Convenience store","Pharmacy","Cafe"], correct:1},
+  {q:"Who voices Sakamoto in English anime?", a:["Matthew Mercer","Dallas Liu","Vinnie Hacker","Xolo Maridueña"], correct:0},
+  {q:"Which assassin group issued a bounty on Sakamoto?", a:["The Order","JAA","X (Slur)","JCC"], correct:2},
+  {q:"Which studio produced the anime?", a:["TMS Entertainment","Bones","Madhouse","Ufotable"], correct:0},
+  {q:"When did Season 1 Part 1 premiere?", a:["Jan 11, 2025","Feb 1, 2025","Mar 1, 2025","Apr 1, 2025"], correct:0},
+  {q:"How tall is Taro Sakamoto?", a:["188 cm","172 cm","165 cm","200 cm"], correct:0},
+  {q:"How much does he weigh post-retirement?", a:["140 kg","120 kg","100 kg","160 kg"], correct:0},
+  {q:"Who is Sakamoto’s wife?", a:["Lu","Aoi","Hana","Nagumo"], correct:1},
+  {q:"What is the name of Sakamoto's daughter’s protector husband?", a:["Shin","Heisuke","Nagumo","None"], correct:3},
+  {q:"What is Sakamoto’s hair color?", a:["Black","Gray/White","Brown","Blonde"], correct:1},
+  {q:"Which organization was Sakamoto a former member of?", a:["The Order","JCC only","X","None"], correct:0},
+  {q:"What manga magazine does Sakamoto Days run in?", a:["Jump Giga","Weekly Shōnen Jump","Saikyō Jump","Magazine Five"], correct:1},
+  {q:"How does Sakamoto temporarily shed fat during fights?", a:["Extreme adrenaline","Magic","Meditation","Telepathy"], correct:0},
+  {q:"Who voices Shin in English?", a:["Dallas Liu","Matthew Mercer","Rosie Okumura","Xolo Maridueña"], correct:0},
+  {q:"How many manga volumes as of June 2025?", a:["15","18","22","25"], correct:2},
+];
+
+// Variables
+let idx = 0, score = 0;
+const total = questions.length;
+const qEl = document.getElementById('question');
+const aEl = document.getElementById('answers');
+const scoreEl = document.getElementById('score');
+const currentEl = document.getElementById('current');
+const nextBtn = document.getElementById('next-btn');
+
+function loadQ() {
+  nextBtn.style.display = 'none';
+  const cur = questions[idx];
+  qEl.innerText = cur.q;
+  aEl.innerHTML = '';
+  currentEl.innerText = idx + 1;
+  
+  cur.a.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.innerText = ans;
+    btn.onclick = () => selectAns(btn, i);
+    aEl.appendChild(btn);
+  });
+}
+
+function selectAns(btn, i) {
+  const cur = questions[idx];
+  Array.from(aEl.children).forEach(b => b.disabled = true);
+  
+  if (i === cur.correct) {
+    btn.classList.add('correct');
+    score++;
+    scoreEl.innerText = score;
+  } else {
+    btn.classList.add('wrong');
+    btn.innerHTML += ' ✖';
+    const correctBtn = aEl.children[cur.correct];
+    correctBtn.classList.add('correct');
+  }
+  nextBtn.style.display = 'block';
+}
+
+nextBtn.onclick = () => {
+  idx++;
+  if (idx < total) loadQ();
+  else showFinal();
+};
+
+function showFinal() {
+  qEl.innerText = `Quiz Finished! Your final score is ${score} / ${total}.`;
+  aEl.innerHTML = '';
+  nextBtn.style.display = 'none';
+  currentEl.innerText = total; // show total for final
+}
+
+loadQ();
+</script>
+
+</body>
+</html>
