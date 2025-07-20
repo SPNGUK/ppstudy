@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Y7 Perry Science Plants, Ecology & Climate Change Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #eef6f1; text-align: center; margin: 0; padding: 20px; }
+    .quiz-container { background: #fff; padding: 20px; max-width: 600px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .question { font-size: 1.2em; margin-bottom: 20px; }
+    .answers button { display: block; margin: 10px auto; padding: 10px; width: 100%; max-width: 400px; border: none; border-radius: 5px; background: #4caf50; color: white; font-size: 1em; cursor: pointer; }
+    .answers button:hover { background: #45a049; }
+    #next-btn { margin-top: 20px; display: none; padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    #score { font-size: 1.5em; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Y7 Perry Science - Plants, Ecology & Climate Change Quiz</h1>
+    <div id="quiz">
+      <div class="question" id="question">Loading question...</div>
+      <div class="answers" id="answers"></div>
+      <button id="next-btn" onclick="nextQuestion()">Next</button>
+      <div id="score"></div>
+    </div>
+  </div>
+  <script>
+    const questions = [
+      { q: "Which organs make up a plant?", a: ["Roots, stem, leaf, flower", "Leaf, roots, bark", "Stem, fruit, root"], correct: 0 },
+      { q: "What is photosynthesis?", a: ["The process plants use to transform light into chemical energy", "Respiration in plants", "Combustion reaction in plants"], correct: 0 },
+      { q: "What are the products of photosynthesis?", a: ["Carbon dioxide and glucose", "Glucose and oxygen", "Water and carbon dioxide"], correct: 1 },
+      { q: "What type of reaction is photosynthesis?", a: ["Exothermic", "Endothermic", "Combustion"], correct: 1 },
+      { q: "Which is NOT a type of seed dispersal?", a: ["Wind", "Animal", "Photosynthesis"], correct: 2 },
+      { q: "What is the female part of a flower called?", a: ["Stamen", "Carpel", "Anther"], correct: 1 },
+      { q: "What does the arrow in a food chain represent?", a: ["Direction of energy transfer", "Movement of animals", "Predator-prey ratio"], correct: 0 },
+      { q: "Which gases are greenhouse gases?", a: ["Carbon dioxide, methane, water vapour", "Oxygen, nitrogen, argon", "Hydrogen, helium, neon"], correct: 0 },
+      { q: "What is a non-renewable energy source?", a: ["Wind", "Solar", "Fossil fuels"], correct: 2 },
+      { q: "What is biodiversity?", a: ["Variety of species in an area", "Process of pollination", "Energy transfer in ecosystems"], correct: 0 },
+      { q: "What is pollination?", a: ["Transfer of pollen from anther to stigma", "Process of seed dispersal", "Plant respiration"], correct: 0 },
+      { q: "Which part of a plant absorbs water and minerals?", a: ["Stem", "Leaf", "Root"], correct: 2 },
+      { q: "What is the greenhouse effect?", a: ["Energy transfer by radiation trapped by gases", "Conversion of glucose to energy", "Seed dispersal by animals"], correct: 0 },
+      { q: "Which organisms start all food chains?", a: ["Consumers", "Producers", "Predators"], correct: 1 },
+      { q: "What human activity increases methane levels?", a: ["Deforestation", "Rice farming and landfill", "Solar power"], correct: 1 },
+      { q: "Which of these is a renewable energy source?", a: ["Coal", "Wind", "Oil"], correct: 1 },
+      { q: "What is respiration in plants?", a: ["Energy release from glucose", "Photosynthesis", "Seed germination"], correct: 0 },
+      { q: "What is germination?", a: ["Growth of a plant from a seed", "Dispersal of pollen", "Energy transfer in plants"], correct: 0 },
+      { q: "What are fossil fuels formed from?", a: ["Living organisms over millions of years", "Minerals and rocks", "Condensation of water"], correct: 0 },
+      { q: "What is interdependence?", a: ["Organisms relying on each other for food and shelter", "Seed germination", "Absorption of carbon dioxide"], correct: 0 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question').innerText = q.q;
+      const answersDiv = document.getElementById('answers');
+      answersDiv.innerHTML = '';
+      q.a.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.innerText = answer;
+        button.onclick = () => checkAnswer(index);
+        answersDiv.appendChild(button);
+      });
+      document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function checkAnswer(selected) {
+      const q = questions[currentQuestion];
+      if (selected === q.correct) {
+        score++;
+        alert('Correct!');
+      } else {
+        alert('Wrong!');
+      }
+      document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        document.getElementById('quiz').innerHTML = `<h2>Quiz Complete!</h2><p>Your score: ${score} / ${questions.length}</p>`;
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
